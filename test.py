@@ -42,6 +42,10 @@ DetectionTests = {
                                  'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
                                  'no_crop'    : True,
                                },
+                'Diffusion1kStep': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/Diffusion1kStep/',
+                                 'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
+                                 'no_crop'    : True,
+                               },
 
                  }
 
