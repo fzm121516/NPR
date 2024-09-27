@@ -23,22 +23,22 @@ def seed_torch(seed=1029):
     torch.backends.cudnn.enabled = False
 seed_torch(100)
 DetectionTests = {
-                'ForenSynths': { 'dataroot'   : '/opt/data/private/DeepfakeDetection/ForenSynths/',
-                                 'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
-                                 'no_crop'    : True,
-                               },
+                # 'ForenSynths': { 'dataroot'   : '/opt/data/private/DeepfakeDetection/ForenSynths/',
+                #                  'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
+                #                  'no_crop'    : True,
+                #                },
 
-           'GANGen-Detection': { 'dataroot'   : '/opt/data/private/DeepfakeDetection/GANGen-Detection/',
+           'GANGen-Detection': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/GANGen-Detection/',
                                  'no_resize'  : True,
                                  'no_crop'    : True,
                                },
 
-         'DiffusionForensics': { 'dataroot'   : '/opt/data/private/DeepfakeDetection/DiffusionForensics/',
+         'DiffusionForensics': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/DiffusionForensics/',
                                  'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
                                  'no_crop'    : True,
                                },
 
-        'UniversalFakeDetect': { 'dataroot'   : '/opt/data/private/DeepfakeDetection/UniversalFakeDetect/',
+        'UniversalFakeDetect': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/UniversalFakeDetect/',
                                  'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
                                  'no_crop'    : True,
                                },
@@ -51,7 +51,19 @@ print(f'Model_path {opt.model_path}')
 
 # get model
 model = resnet50(num_classes=1)
-model.load_state_dict(torch.load(opt.model_path, map_location='cpu'), strict=True)
+# model.load_state_dict(torch.load(opt.model_path, map_location='cpu'), strict=True)
+
+try:
+    model.load_state_dict(torch.load(opt.model_path, map_location='cpu'), strict=True)
+except:
+    from collections import OrderedDict
+    from copy import deepcopy
+    state_dict = torch.load(opt.model_path, map_location='cpu')['model']
+    pretrained_dict = OrderedDict()
+    for ki in state_dict.keys():
+        pretrained_dict[ki[7:]] = deepcopy(state_dict[ki])
+    model.load_state_dict(pretrained_dict, strict=True)
+
 model.cuda()
 model.eval()
 
@@ -68,6 +80,6 @@ for testSet in DetectionTests.keys():
         opt.no_crop   = DetectionTests[testSet]['no_crop']
         acc, ap, _, _, _, _ = validate(model, opt)
         accs.append(acc);aps.append(ap)
-        print("({} {:12}) acc: {:.1f}; ap: {:.1f}".format(v_id, val, acc*100, ap*100))
-    print("({} {:10}) acc: {:.1f}; ap: {:.1f}".format(v_id+1,'Mean', np.array(accs).mean()*100, np.array(aps).mean()*100));print('*'*25) 
+        print("({} {:12}) acc: {:.2f}; ap: {:.2f}".format(v_id, val, acc*100, ap*100))
+    print("({} {:10}) acc: {:.2f}; ap: {:.2f}".format(v_id+1,'Mean', np.array(accs).mean()*100, np.array(aps).mean()*100));print('*'*25) 
 
