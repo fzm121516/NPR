@@ -49,5 +49,5 @@ cd $pwd/dataset
 
 # https://github.com/peterwang512/CNNDetection
 gdown https://drive.google.com/uc?id=1AhWOsdCalrXE_6RmBZzyiC1ehXa6GXBK --continue
-tar -zxvf CNN_synth_testset.zip -C ./ForenSynths
+unzip CNN_synth_testset.zip -d ./ForenSynths
 
