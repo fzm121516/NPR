@@ -23,29 +23,30 @@ def seed_torch(seed=1029):
     torch.backends.cudnn.enabled = False
 seed_torch(100)
 DetectionTests = {
-                # 'ForenSynths': { 'dataroot'   : '/opt/data/private/DeepfakeDetection/ForenSynths/',
-                #                  'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
-                #                  'no_crop'    : True,
-                #                },
-
-           'GANGen-Detection': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/GANGen-Detection/',
-                                 'no_resize'  : True,
-                                 'no_crop'    : True,
-                               },
-
-         'DiffusionForensics': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/DiffusionForensics/',
+                'ForenSynths': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/ForenSynths/',
                                  'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
                                  'no_crop'    : True,
                                },
+                        
 
-        'UniversalFakeDetect': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/UniversalFakeDetect/',
-                                 'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
-                                 'no_crop'    : True,
-                               },
-                'Diffusion1kStep': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/Diffusion1kStep/',
-                                 'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
-                                 'no_crop'    : True,
-                               },
+        #    'GANGen-Detection': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/GANGen-Detection/',
+        #                          'no_resize'  : True,
+        #                          'no_crop'    : True,
+        #                        },
+
+        #  'DiffusionForensics': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/DiffusionForensics/',
+        #                          'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
+        #                          'no_crop'    : True,
+        #                        },
+
+        # 'UniversalFakeDetect': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/UniversalFakeDetect/',
+        #                          'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
+        #                          'no_crop'    : True,
+        #                        },
+        #         'Diffusion1kStep': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/Diffusion1kStep/',
+        #                          'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
+        #                          'no_crop'    : True,
+        #                        },
 
                  }
 
@@ -71,19 +72,49 @@ except:
 model.cuda()
 model.eval()
 
+# for testSet in DetectionTests.keys():
+#     dataroot = DetectionTests[testSet]['dataroot']
+#     printSet(testSet)
+
+#     accs = [];aps = []
+#     print(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))
+#     for v_id, val in enumerate(os.listdir(dataroot)):
+#         opt.dataroot = '{}/{}'.format(dataroot, val)
+#         opt.classes  = '' #os.listdir(opt.dataroot) if multiclass[v_id] else ['']
+#         opt.no_resize = DetectionTests[testSet]['no_resize']
+#         opt.no_crop   = DetectionTests[testSet]['no_crop']
+#         acc, ap, _, _, _, _ = validate(model, opt)
+#         accs.append(acc);aps.append(ap)
+#         print("({} {:12}) acc: {:.2f}; ap: {:.2f}".format(v_id, val, acc*100, ap*100))
+#     print("({} {:10}) acc: {:.2f}; ap: {:.2f}".format(v_id+1,'Mean', np.array(accs).mean()*100, np.array(aps).mean()*100));print('*'*25) 
+
 for testSet in DetectionTests.keys():
     dataroot = DetectionTests[testSet]['dataroot']
     printSet(testSet)
 
-    accs = [];aps = []
+    accs = []
+    aps = []
+    fnrs = []
+    fprs = []
     print(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))
+    
     for v_id, val in enumerate(os.listdir(dataroot)):
         opt.dataroot = '{}/{}'.format(dataroot, val)
-        opt.classes  = '' #os.listdir(opt.dataroot) if multiclass[v_id] else ['']
+        opt.classes = ''  # os.listdir(opt.dataroot) if multiclass[v_id] else ['']
         opt.no_resize = DetectionTests[testSet]['no_resize']
-        opt.no_crop   = DetectionTests[testSet]['no_crop']
-        acc, ap, _, _, _, _ = validate(model, opt)
-        accs.append(acc);aps.append(ap)
-        print("({} {:12}) acc: {:.2f}; ap: {:.2f}".format(v_id, val, acc*100, ap*100))
-    print("({} {:10}) acc: {:.2f}; ap: {:.2f}".format(v_id+1,'Mean', np.array(accs).mean()*100, np.array(aps).mean()*100));print('*'*25) 
+        opt.no_crop = DetectionTests[testSet]['no_crop']
+        
+        acc, ap, r_acc, f_acc, fnr, fpr, _, _ = validate(model, opt)
 
+        accs.append(acc)
+        aps.append(ap)
+        fnrs.append(fnr)
+        fprs.append(fpr)
+
+        print("({} {:12}) acc: {:.2f}; ap: {:.2f}; fnr: {:.2f}; fpr: {:.2f}".format(
+            v_id, val, acc * 100, ap * 100, fnr * 100, fpr * 100))
+    
+    print("({} {:10}) acc: {:.2f}; ap: {:.2f}; fnr: {:.2f}; fpr: {:.2f}".format(
+        v_id + 1, 'Mean', np.array(accs).mean() * 100, np.array(aps).mean() * 100,
+        np.array(fnrs).mean() * 100, np.array(fprs).mean() * 100))
+    print('*' * 25)

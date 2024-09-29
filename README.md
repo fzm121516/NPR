@@ -258,3 +258,10 @@ Train with sdv4 as the training set, using a random seed of 70. [Pretrained chec
 ## Acknowledgments
 
 This repository borrows partially from the [CNNDetection](https://github.com/peterwang512/CNNDetection).
+
+model_epoch_last_3090.pth
+
+CUDA_VISIBLE_DEVICES=0 /home/fanzheming/zm/conda/pytorch18/bin/python test.py --model_path ./NPR.pth  --batch_size 32
+
+
+CUDA_VISIBLE_DEVICES=0 /home/fanzheming/zm/conda/pytorch18/bin/python test.py --model_path ./model_epoch_last_3090.pth  --batch_size 32
