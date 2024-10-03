@@ -4,7 +4,7 @@ import os
 import glob
 from PIL import Image
 import numpy as np
-
+import imgaug.augmenters as iaa
 
 
 
@@ -30,13 +30,13 @@ for i in range(num_image):
 
     # Load image
     image = Image.open(image_path)
-    image_array = np.array(image)
+
 
     # 添加高斯噪声
-    mean = 0
-    std = 5  # 调整标准差以控制噪声强度
-    gaussian_noise = np.random.normal(mean, std, image_array.shape).astype(np.uint8)
-    noisy_image = np.clip(image_array + gaussian_noise, 0, 255).astype(np.uint8)
+    # 定义添加高斯噪声的增强器
+    aug = iaa.AdditiveGaussianNoise(scale=(0, 0.05*255))  # scale 可以调整
+    image_aug = aug(image=image)
+
     # Save results
     output_dir = os.path.join(
         args.result_dir,
@@ -54,4 +54,4 @@ for i in range(num_image):
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
     # Save noisy image
-    Image.fromarray(noisy_image).save(save_path)
+    Image.fromarray(image_aug).save(save_path)
