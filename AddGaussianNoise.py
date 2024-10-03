@@ -38,7 +38,8 @@ for i in range(num_image):
     # 定义添加高斯噪声的增强器
     # # scale 可以调整
     # aug = iaa.AdditiveGaussianNoise(scale=(0, 0.05*255))  
-    aug = iaa.AdditiveGaussianNoise(scale=(0, 0.05*255), per_channel=True)
+    # aug = iaa.AdditiveGaussianNoise(scale=(0, 0.05*255), per_channel=True)
+    aug = iaa.AdditiveGaussianNoise(scale=(0, 0.01*255), per_channel=True)
 
     # 应用增强
     image_aug = aug(image=image_np)
