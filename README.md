@@ -263,5 +263,6 @@ model_epoch_last_3090.pth
 
 CUDA_VISIBLE_DEVICES=0 /home/fanzheming/zm/conda/pytorch18/bin/python test.py --model_path ./NPR.pth  --batch_size 32
 
-
 CUDA_VISIBLE_DEVICES=0 /home/fanzheming/zm/conda/pytorch18/bin/python test.py --model_path ./model_epoch_last_3090.pth  --batch_size 32
+
+CUDA_VISIBLE_DEVICES=0 /home/fanzheming/zm/conda/pytorch18/bin/python test.py --model_path ./NPR.pth  --batch_size 32

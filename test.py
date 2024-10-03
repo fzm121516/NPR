@@ -103,8 +103,8 @@ for testSet in DetectionTests.keys():
     aps = []
     fnrs = []
     fprs = []
-    raccs = []  # 添加存储 r_acc 的列表
-    faccs = []  # 添加存储 f_acc 的列表
+    raccs = []  # 存储 r_acc 的列表
+    faccs = []  # 存储 f_acc 的列表
     print(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))
     
     for v_id, val in enumerate(os.listdir(dataroot)):
@@ -122,13 +122,22 @@ for testSet in DetectionTests.keys():
         raccs.append(r_acc)  # 添加 r_acc
         faccs.append(f_acc)  # 添加 f_acc
 
-        print("({} {:12}) acc: {:.2f}; ap: {:.2f}; fnr: {:.2f}; fpr: {:.2f}; r_acc: {:.2f}; f_acc: {:.2f}".format(
-            v_id, val, acc * 100, ap * 100, fnr * 100, fpr * 100, r_acc * 100, f_acc * 100))
+        # 输出样本名称和 v_id
+        print(f"({v_id} {val})")
+        
+        # 输出其他指标，设置固定宽度
+        print("  acc: {0:6.2f};  ap: {1:6.2f};  fnr: {2:6.2f};  fpr: {3:6.2f};  r_acc: {4:6.2f};  f_acc: {5:6.2f}".format(
+            acc * 100, ap * 100, fnr * 100, fpr * 100, r_acc * 100, f_acc * 100))
 
-    print("({} {:10}) acc: {:.2f}; ap: {:.2f}; fnr: {:.2f}; fpr: {:.2f}; r_acc: {:.2f}; f_acc: {:.2f}".format(
-        v_id + 1, 'Mean', np.array(accs).mean() * 100, np.array(aps).mean() * 100,
+    # 输出均值
+    print("Mean:")  # 添加换行
+    print("  acc: {0:6.2f};  ap: {1:6.2f};  fnr: {2:6.2f};  fpr: {3:6.2f};  r_acc: {4:6.2f};  f_acc: {5:6.2f}".format(
+        np.array(accs).mean() * 100, np.array(aps).mean() * 100,
         np.array(fnrs).mean() * 100, np.array(fprs).mean() * 100,
         np.array(raccs).mean() * 100, np.array(faccs).mean() * 100))
     
     print('*' * 25)
+
+
+
 
