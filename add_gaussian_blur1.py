@@ -49,22 +49,13 @@ def gaussian_blur(img, sigma):
 def process_image(image_path):
     image_name = os.path.basename(image_path)  # 获取文件名（包含扩展名）
 
-    # Load image
+  # Load image
     image = Image.open(image_path)
 
-    # 将图像转换为 NumPy 数组
-    image_np = np.array(image)
-
-    # 定义添加高斯噪声的增强器
-    # # scale 可以调整
-    # aug = iaa.AdditiveGaussianNoise(scale=(0, 0.05*255))  
-    # aug = iaa.AdditiveGaussianNoise(scale=(0, 0.05*255), per_channel=True)
-    aug = iaa.AdditiveGaussianNoise(scale=(0, 0.03*255), per_channel=True)
-
-    # 应用增强
-    image_aug = aug(image=image_np)
-
-    image_output = image_aug
+    # Apply Gaussian blur
+    sigma = 1  # You can adjust this value as needed
+    image_blurred = gaussian_blur(image, sigma) 
+    image_output = image_blurred
     
     # Save results
     output_dir = os.path.join(
@@ -81,7 +72,7 @@ def process_image(image_path):
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
     # Save compressed image
-    Image.fromarray(image_output).save(save_path)  # 保存压缩后的JPEG图像
+    image_output.save(save_path)  # 保存压缩后的JPEG图像
 
 # Process images in parallel with progress bar
 with concurrent.futures.ThreadPoolExecutor(max_workers=args.num_threads) as executor:

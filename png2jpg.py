@@ -35,37 +35,16 @@ def png2jpg(img, quality):
     out.close()
     return Image.fromarray(img)
 
-def gaussian_blur(img, sigma):
-    img = np.array(img)
-
-    # Apply Gaussian blur to each channel
-    gaussian_filter(img[:,:,0], output=img[:,:,0], sigma=sigma)
-    gaussian_filter(img[:,:,1], output=img[:,:,1], sigma=sigma)
-    gaussian_filter(img[:,:,2], output=img[:,:,2], sigma=sigma)
-
-    return Image.fromarray(img)
-
 # Function to process a single image
 def process_image(image_path):
     image_name = os.path.basename(image_path)  # 获取文件名（包含扩展名）
 
     # Load image
-    image = Image.open(image_path)
+    image = Image.open(image_path).convert("RGB")
 
-    # 将图像转换为 NumPy 数组
-    image_np = np.array(image)
+    # 使用JPEG压缩扰动图像
+    compressed_image = png2jpg(image, quality=95)  
 
-    # 定义添加高斯噪声的增强器
-    # # scale 可以调整
-    # aug = iaa.AdditiveGaussianNoise(scale=(0, 0.05*255))  
-    # aug = iaa.AdditiveGaussianNoise(scale=(0, 0.05*255), per_channel=True)
-    aug = iaa.AdditiveGaussianNoise(scale=(0, 0.03*255), per_channel=True)
-
-    # 应用增强
-    image_aug = aug(image=image_np)
-
-    image_output = image_aug
-    
     # Save results
     output_dir = os.path.join(
         args.result_dir,
@@ -81,7 +60,7 @@ def process_image(image_path):
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
     # Save compressed image
-    Image.fromarray(image_output).save(save_path)  # 保存压缩后的JPEG图像
+    compressed_image.save(save_path)  # 保存压缩后的JPEG图像
 
 # Process images in parallel with progress bar
 with concurrent.futures.ThreadPoolExecutor(max_workers=args.num_threads) as executor:

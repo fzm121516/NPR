@@ -178,6 +178,27 @@ class ResNet(nn.Module):
         x = self.fc1(x)
 
         return x
+    
+    # def forward(self, x):
+
+    #     factor = 0.5
+    #     x_half = F.interpolate(x, scale_factor=factor, mode='nearest', recompute_scale_factor=True)
+    #     x_re   = F.interpolate(x_half, scale_factor=1/factor, mode='nearest', recompute_scale_factor=True)
+    #     NPR  = x - x_re
+
+    #     x = self.conv1(NPR*2.0/3.0)
+    #     x = self.bn1(x)
+    #     x = self.relu(x)
+    #     x = self.maxpool(x)
+
+    #     x = self.layer1(x)
+    #     x = self.layer2(x)
+
+    #     x = self.avgpool(x)
+    #     x = x.view(x.size(0), -1)
+    #     x = self.fc1(x)
+
+    #     return x
 
 
 def resnet18(pretrained=False, **kwargs):

@@ -255,11 +255,22 @@ Train with sdv4 as the training set, using a random seed of 70. [Pretrained chec
 | NPR(our)               | 99.8  | 100.0 | 96.3   | 99.8| 97.3  | 100.0| 87.5| 94.5   | 95.0    | 99.5 | 99.7  | 100.0 | 86.6  | 88.8  | 77.4 | 86.2 | 92.5 | 96.1 |
 -->
 
+
+
+
+
 ## Acknowledgments
+
+
+
+
 
 This repository borrows partially from the [CNNDetection](https://github.com/peterwang512/CNNDetection).
 
 model_epoch_last_3090.pth
+
+
+
 
 CUDA_VISIBLE_DEVICES=0 /home/fanzheming/zm/conda/pytorch18/bin/python test.py --model_path ./NPR.pth  --batch_size 32
 

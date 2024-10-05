@@ -23,7 +23,7 @@ def seed_torch(seed=1029):
     torch.backends.cudnn.enabled = False
 seed_torch(100)
 DetectionTests = {
-                    'proganwithnoise': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/proganwithnoise',
+                    'progan_with_post-processing': { 'dataroot'   : '/home/fanzheming/zm/NPR-DeepfakeDetection/dataset/proganwithnoise',
                                  'no_resize'  : False, # Due to the different shapes of images in the dataset, resizing is required during batch detection.
                                  'no_crop'    : True,
                                },
