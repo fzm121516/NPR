@@ -29,7 +29,7 @@ print("Find ", num_image, " images")
 # Function to convert PNG to JPEG with specified quality
 def png2jpg(img, quality):
     out = BytesIO()
-    img.save(out, format='jpeg', quality=quality)  # ranging from 0-95, 75 is default
+    img.save(out, format='jpeg', quality=quality)  
     img = Image.open(out)
     img = np.array(img)  # load from memory before ByteIO closes
     out.close()

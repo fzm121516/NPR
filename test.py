@@ -107,7 +107,7 @@ for testSet in DetectionTests.keys():
     faccs = []  # 存储 f_acc 的列表
     print(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))
     
-    for v_id, val in enumerate(os.listdir(dataroot)):
+    for v_id, val in enumerate(sorted(os.listdir(dataroot))):
         opt.dataroot = '{}/{}'.format(dataroot, val)
         opt.classes = ''  # os.listdir(opt.dataroot) if multiclass[v_id] else ['']
         opt.no_resize = DetectionTests[testSet]['no_resize']
